@@ -63,6 +63,14 @@ export const getHolidays = async (): Promise<Holiday[]> => {
 export const saveHolidays = async (holidays: Holiday[]): Promise<boolean> => {
   localStorage.setItem(STORAGE_KEYS.HOLIDAYS, JSON.stringify(holidays));
 
+  if (isSheetsEnabled()) {
+    try {
+      await saveHolidaysToSheets(getSheetId(), holidays);
+    } catch (e) {
+      console.warn("Error saving holidays to Sheets:", e);
+    }
+  }
+
   if (!isFirebaseConfigured) return true;
 
   try {
@@ -89,6 +97,14 @@ export const deleteHoliday = async (id: string): Promise<boolean> => {
      const list = JSON.parse(stored) as Holiday[];
      const filtered = list.filter(h => h.id !== id);
      localStorage.setItem(STORAGE_KEYS.HOLIDAYS, JSON.stringify(filtered));
+
+     if (isSheetsEnabled()) {
+        try {
+           await saveHolidaysToSheets(getSheetId(), filtered);
+        } catch (e) {
+           console.warn("Error deleting holiday in Sheets:", e);
+        }
+     }
    }
 
    if (!isFirebaseConfigured) return true;
@@ -402,6 +418,14 @@ export const deleteAttendanceRecord = async (id: string): Promise<boolean> => {
       const records = JSON.parse(stored) as AttendanceRecord[];
       const filtered = records.filter(r => r.id !== id);
       localStorage.setItem(STORAGE_KEYS.ATTENDANCE, JSON.stringify(filtered));
+
+      if (isSheetsEnabled()) {
+        try {
+          await saveAttendanceToSheets(getSheetId(), filtered);
+        } catch (e) {
+          console.warn("Error deleting attendance in Sheets:", e);
+        }
+      }
   }
 
   if (!isFirebaseConfigured) return true;
@@ -424,6 +448,14 @@ export const updateAttendanceStatus = async (id: string, newStatus: 'PRESENT' | 
       if (index !== -1) {
           records[index].status = newStatus;
           localStorage.setItem(STORAGE_KEYS.ATTENDANCE, JSON.stringify(records));
+
+          if (isSheetsEnabled()) {
+             try {
+                await saveAttendanceToSheets(getSheetId(), records);
+             } catch (e) {
+                console.warn("Error updating attendance in Sheets:", e);
+             }
+          }
       }
   }
 
@@ -473,6 +505,14 @@ export const addAttendanceRecordToSheet = async (
   // Update Local Storage SEGERA
   const updatedRecords = [newRecord, ...cachedRecords];
   localStorage.setItem(STORAGE_KEYS.ATTENDANCE, JSON.stringify(updatedRecords));
+
+  if (isSheetsEnabled()) {
+    try {
+      await saveAttendanceToSheets(getSheetId(), updatedRecords);
+    } catch (e) {
+      console.warn("Error saving attendance to Sheets:", e);
+    }
+  }
 
   if (!isFirebaseConfigured) {
     return { 

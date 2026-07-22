@@ -62,8 +62,8 @@ const ScannerTab: React.FC<ScannerTabProps> = ({ students, records, onRecordUpda
       if (!showAttended && isAttended) return false;
 
       if (isHaidMode && s.gender !== 'P') return false;
-      const matchesSearch = s.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                            s.id.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesSearch =  (s.name || '').toLowerCase().includes(searchQuery.toLowerCase()) || 
+                             (s.id || '').toLowerCase().includes(searchQuery.toLowerCase());
       const matchesClass = manualClassFilter === 'ALL' || s.className === manualClassFilter;
       return matchesSearch && matchesClass;
     }).sort((a, b) => {
