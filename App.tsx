@@ -11,7 +11,7 @@ import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 import { Student, AttendanceRecord, TabView, UserRole, Teacher, SchoolConfig, Holiday } from './types';
 import { getStudents, getAttendance, getTeachers, getSchoolConfig, getHolidays } from './services/storageService';
-import { STORAGE_KEYS, INITIAL_STUDENTS, INITIAL_TEACHERS, INITIAL_CONFIG } from './constants';
+import { STORAGE_KEYS, INITIAL_STUDENTS, INITIAL_TEACHERS, INITIAL_CONFIG, GOOGLE_SCRIPT_URL } from './constants';
 import { isFirebaseConfigured } from './services/firebase';
 
 function App() {
@@ -91,7 +91,7 @@ function App() {
     if (isSyncing) return;
     setIsSyncing(true);
     try {
-      const sheetId = localStorage.getItem('APPS_SCRIPT_URL');
+      const sheetId = GOOGLE_SCRIPT_URL;
       if (sheetId) {
         // Load from sheets
         const { loadAllDataFromSheets } = await import('./services/sheetsService');

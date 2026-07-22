@@ -2,7 +2,11 @@ import { Student, AttendanceRecord, Teacher, Holiday } from '../types';
 
 export const loadAllDataFromSheets = async (appScriptUrl: string) => {
   try {
-    const res = await fetch(`${appScriptUrl}?action=readAll`);
+    const res = await fetch(`${appScriptUrl}?action=readAll`, {
+      method: 'GET',
+      redirect: 'follow',
+      credentials: 'omit'
+    });
     if (!res.ok) throw new Error('Network response was not ok');
     const data = await res.json();
 
@@ -22,6 +26,8 @@ const sendPostData = async (url: string, action: string, data: any) => {
   try {
     const res = await fetch(url, {
       method: 'POST',
+      redirect: 'follow',
+      credentials: 'omit',
       // Send as text/plain to avoid CORS preflight issues with Google Apps Script
       headers: {
         'Content-Type': 'text/plain;charset=utf-8'

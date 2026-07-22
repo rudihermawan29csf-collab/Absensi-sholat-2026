@@ -1,9 +1,8 @@
 
 import { Student, AttendanceRecord, Teacher, SchoolConfig, Holiday } from '../types';
-import { INITIAL_STUDENTS, INITIAL_TEACHERS, INITIAL_CONFIG, STORAGE_KEYS } from '../constants';
+import { INITIAL_STUDENTS, INITIAL_TEACHERS, INITIAL_CONFIG, STORAGE_KEYS, GOOGLE_SCRIPT_URL } from '../constants';
 import { db, isFirebaseConfigured } from './firebase';
 import { loadAllDataFromSheets, saveStudentsToSheets, saveAttendanceToSheets, saveTeachersToSheets, saveHolidaysToSheets } from './sheetsService';
-import { getAccessToken } from './authService';
 import { 
   collection, 
   getDocs, 
@@ -29,9 +28,9 @@ const DOC_SCHOOL_CONFIG = 'school_settings';
 
 // --- HELPER UNTUK SHEETS ---
 const isSheetsEnabled = () => {
-  return !!localStorage.getItem('APPS_SCRIPT_URL');
+  return !!GOOGLE_SCRIPT_URL;
 };
-const getSheetId = () => localStorage.getItem('APPS_SCRIPT_URL') || '';
+const getSheetId = () => GOOGLE_SCRIPT_URL;
 
 
 // --- HOLIDAY SERVICE ---

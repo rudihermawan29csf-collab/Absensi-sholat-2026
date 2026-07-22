@@ -22,9 +22,6 @@ const SettingsTab: React.FC<SettingsTabProps> = ({ config, setConfig, holidays, 
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
 
-  // Sheets State
-  const [appScriptUrl, setAppScriptUrl] = useState(localStorage.getItem('APPS_SCRIPT_URL') || '');
-  const [sheetsMessage, setSheetsMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
   
   // Auth State
   const [user, setUser] = useState<User | null>(null);
@@ -60,18 +57,6 @@ const SettingsTab: React.FC<SettingsTabProps> = ({ config, setConfig, holidays, 
     setIsSaving(false);
   };
 
-  const handleSaveAppScript = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!appScriptUrl.trim()) {
-      localStorage.removeItem('APPS_SCRIPT_URL');
-      setSheetsMessage({ text: 'Penyimpanan Google Sheets dinonaktifkan.', type: 'success' });
-      setTimeout(() => window.location.reload(), 1000);
-      return;
-    }
-    localStorage.setItem('APPS_SCRIPT_URL', appScriptUrl.trim());
-    setSheetsMessage({ text: 'Apps Script URL disimpan! Memuat ulang aplikasi...', type: 'success' });
-    setTimeout(() => window.location.reload(), 1500);
-  };
 
   const handleLogin = async () => {
     setIsLoggingIn(true);
@@ -302,58 +287,6 @@ const SettingsTab: React.FC<SettingsTabProps> = ({ config, setConfig, holidays, 
                 )}
             </div>
         </div>
-
-      </div>
-
-      {/* KONFIGURASI GOOGLE SHEETS */}
-      <div className="bg-slate-900/50 p-6 rounded-2xl border border-white/5 backdrop-blur-sm max-w-4xl mx-auto mt-8">
-         <h2 className="text-xl font-bold text-green-500 flex items-center gap-3 font-gaming mb-6 pb-4 border-b border-white/10">
-            <Table className="text-green-400" />
-            GOOGLE SHEETS INTEGRATION
-         </h2>
-
-         {sheetsMessage && (
-            <div className={`mb-6 p-4 rounded-xl border flex items-center justify-center text-sm font-bold ${sheetsMessage.type === 'success' ? 'bg-green-900/30 border-green-500 text-green-400' : 'bg-red-900/30 border-red-500 text-red-400'}`}>
-                {sheetsMessage.text}
-            </div>
-         )}
-
-         <div className="space-y-6">
-            <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 text-sm text-slate-300">
-               <p className="mb-2"><strong>Hubungkan aplikasi ini dengan Google Sheets.</strong> Anda bisa memindahkan semua penyimpanan data ke Spreadsheet menggunakan Google Apps Script.</p>
-               <ol className="list-decimal pl-5 space-y-1 text-slate-400 text-xs">
-                 <li>Buat file Spreadsheet di Google Drive.</li>
-                 <li>Buat 4 sheet: <strong>Students</strong>, <strong>Attendance</strong>, <strong>Teachers</strong>, <strong>Holidays</strong>.</li>
-                 <li>Buka menu <strong>Ekstensi &gt; Apps Script</strong> dan masukkan kode API Anda, lalu klik Deploy &gt; Web App.</li>
-                 <li>Salin <strong>Web App URL</strong> hasil deploy, dan tempelkan di bawah ini, lalu klik Simpan.</li>
-               </ol>
-            </div>
-
-            <div className="grid grid-cols-1 items-start">
-               <div>
-                 <form onSubmit={handleSaveAppScript}>
-                   <h3 className="text-sm font-bold text-slate-400 mb-3 uppercase tracking-widest">Konfigurasi Web App URL</h3>
-                   <div className="space-y-3">
-                     <input 
-                       type="text" 
-                       value={appScriptUrl}
-                       onChange={(e) => setAppScriptUrl(e.target.value)}
-                       placeholder="Masukkan Web App URL Apps Script..."
-                       className="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-slate-200 outline-none focus:border-green-500 font-mono text-sm"
-                     />
-                     <div className="flex gap-2">
-                       <button 
-                         type="submit" 
-                         className="flex-1 py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition-all bg-green-600 hover:bg-green-500 text-white shadow-lg"
-                       >
-                         <Database size={18} /> {appScriptUrl ? 'SIMPAN & AKTIFKAN' : 'NONAKTIFKAN'}
-                       </button>
-                     </div>
-                   </div>
-                 </form>
-               </div>
-            </div>
-         </div>
       </div>
     </div>
   );
