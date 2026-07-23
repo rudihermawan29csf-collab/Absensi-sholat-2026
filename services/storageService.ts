@@ -2,7 +2,7 @@
 import { Student, AttendanceRecord, Teacher, SchoolConfig, Holiday } from '../types';
 import { INITIAL_STUDENTS, INITIAL_TEACHERS, INITIAL_CONFIG, STORAGE_KEYS, GOOGLE_SCRIPT_URL } from '../constants';
 import { db, isFirebaseConfigured } from './firebase';
-import { loadAllDataFromSheets, saveStudentsToSheets, saveAttendanceToSheets, appendAttendanceToSheet, saveTeachersToSheets, saveHolidaysToSheets } from './sheetsService';
+import { loadAllDataFromSheets, saveStudentsToSheets, saveAttendanceToSheets, saveTeachersToSheets, saveHolidaysToSheets } from './sheetsService';
 import { 
   collection, 
   getDocs, 
@@ -498,7 +498,7 @@ export const addAttendanceRecordToSheet = async (
 
   if (isSheetsEnabled()) {
     try {
-      await appendAttendanceToSheet(getSheetId(), newRecord);
+      await saveAttendanceToSheets(getSheetId(), updatedRecords);
     } catch (e) {
       console.warn("Error saving attendance to Sheets:", e);
     }

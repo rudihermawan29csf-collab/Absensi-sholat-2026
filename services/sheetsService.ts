@@ -49,10 +49,6 @@ export const saveAttendanceToSheets = async (appScriptUrl: string, records: Atte
   await sendPostData(appScriptUrl, 'saveAttendance', records);
 };
 
-export const appendAttendanceToSheet = async (appScriptUrl: string, record: AttendanceRecord) => {
-  await sendPostData(appScriptUrl, 'appendAttendance', record);
-};
-
 export const saveTeachersToSheets = async (appScriptUrl: string, teachers: Teacher[]) => {
   await sendPostData(appScriptUrl, 'saveTeachers', teachers);
 };
