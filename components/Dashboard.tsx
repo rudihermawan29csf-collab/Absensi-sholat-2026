@@ -55,14 +55,14 @@ const Dashboard: React.FC<DashboardProps> = ({ students, records, config }) => {
     const absentCount = totalStudents - (presentCount + haidCount);
     
     // Percentage
-    const percentage = totalStudents > 0 ? Math.round(((presentCount + haidCount) / totalStudents) * 100) : 0;
+    const percentage = totalStudents > 0 ? ((presentCount + haidCount) / totalStudents * 100).toFixed(1) : 0;
 
     return {
       total: totalStudents,
       present: presentCount,
       haid: haidCount,
       absent: absentCount,
-      percentage
+      percentage: Number(percentage)
     };
   }, [students, records, selectedClass, dateStr]);
 

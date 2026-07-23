@@ -497,11 +497,9 @@ export const addAttendanceRecordToSheet = async (
   localStorage.setItem(STORAGE_KEYS.ATTENDANCE, JSON.stringify(updatedRecords));
 
   if (isSheetsEnabled()) {
-    try {
-      await appendAttendanceToSheet(getSheetId(), newRecord);
-    } catch (e) {
+    appendAttendanceToSheet(getSheetId(), newRecord).catch(e => {
       console.warn("Error saving attendance to Sheets:", e);
-    }
+    });
   }
 
   if (!isFirebaseConfigured) {
@@ -512,27 +510,29 @@ export const addAttendanceRecordToSheet = async (
     };
   }
 
-  try {
-    // Hapus ID sebelum kirim ke firestore agar digenerate otomatis
-    const { id, ...recordData } = newRecord;
-    
-    const safeRecordData = JSON.parse(JSON.stringify(recordData));
+  // Async upload to Firestore to avoid blocking UI
+  (async () => {
+    try {
+      const { id, ...recordData } = newRecord;
+      const safeRecordData = JSON.parse(JSON.stringify(recordData));
+      const docRef = await addDoc(collection(db, COLL_ATTENDANCE), safeRecordData);
+      
+      // Update ID in local storage when Firestore is done
+      const storedAfter = localStorage.getItem(STORAGE_KEYS.ATTENDANCE);
+      if (storedAfter) {
+          const recs = JSON.parse(storedAfter) as AttendanceRecord[];
+          const finalRecord = { ...newRecord, id: docRef.id };
+          const fixedRecords = recs.map(r => r.id === offlineId ? finalRecord : r);
+          localStorage.setItem(STORAGE_KEYS.ATTENDANCE, JSON.stringify(fixedRecords));
+      }
+    } catch (error: any) {
+      console.warn("Error adding attendance, data only saved locally:", error.message);
+    }
+  })();
 
-    const docRef = await addDoc(collection(db, COLL_ATTENDANCE), safeRecordData);
-    
-    // Perbarui ID di local storage dengan ID asli dari Firestore
-    const finalRecord = { ...newRecord, id: docRef.id };
-    const fixedRecords = updatedRecords.map(r => r.id === offlineId ? finalRecord : r);
-    localStorage.setItem(STORAGE_KEYS.ATTENDANCE, JSON.stringify(fixedRecords));
-
-    return { 
-      success: true, 
-      message: `${newRecord.studentName} berhasil ABSEN.`,
-      record: finalRecord 
-    };
-  } catch (error) {
-    console.warn("Error adding attendance, data only saved locally:", error.message);
-    // Tetap return sukses karena sudah tersimpan di local
-    return { success: true, message: "Tersimpan Lokal (Gagal Sync ke Server).", record: newRecord };
-  }
+  return { 
+    success: true, 
+    message: `${newRecord.studentName} berhasil ABSEN.`,
+    record: newRecord 
+  };
 };

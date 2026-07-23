@@ -11,7 +11,15 @@ export const loadAllDataFromSheets = async (appScriptUrl: string) => {
     const data = await res.json();
 
     const students: Student[] = data.students || [];
-    const attendance: AttendanceRecord[] = data.attendance || [];
+    let attendance: AttendanceRecord[] = data.attendance || [];
+    attendance = attendance.map(record => {
+      let dStr = record.date;
+      if (dStr && typeof dStr === 'string' && dStr.includes('T')) {
+        const d = new Date(dStr);
+        dStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+      }
+      return { ...record, date: dStr };
+    });
     const teachers: Teacher[] = data.teachers || [];
     const holidays: Holiday[] = data.holidays || [];
 
