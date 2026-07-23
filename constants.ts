@@ -2,7 +2,7 @@
 import { Student, Teacher, SchoolConfig } from './types';
 
 // URL Google Apps Script Anda
-export const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxncH3dZ6Sc_bRieNlumJ6WLQyOkT2Jagmxq_S0FExaHT7dM4wlesgoYSoTx3P9CQdDyg/exec";
+export const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbylEY2Oyv9nUXuL3GqLtgPQkYvZvV46Qup7TLNq4m7Ife9Vqp0GFppA0Vx4a8-lpNLfHA/exec";
 
 export const INITIAL_CONFIG: SchoolConfig = {
   academicYear: '2025/2026',

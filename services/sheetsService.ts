@@ -17,7 +17,7 @@ export const loadAllDataFromSheets = async (appScriptUrl: string) => {
 
     return { students, attendance, teachers, holidays };
   } catch (error) {
-    console.error("Error loading data from Apps Script:", error);
+    console.warn("Error loading data from Apps Script:", error);
     throw error;
   }
 };
@@ -36,7 +36,7 @@ const sendPostData = async (url: string, action: string, data: any) => {
     // With no-cors, response is opaque. Assume success if fetch didn't throw.
     return { success: true };
   } catch (error) {
-    console.error(`Error saving ${action}:`, error);
+    console.warn(`Error saving ${action}:`, error);
     throw error;
   }
 };
@@ -47,6 +47,10 @@ export const saveStudentsToSheets = async (appScriptUrl: string, students: Stude
 
 export const saveAttendanceToSheets = async (appScriptUrl: string, records: AttendanceRecord[]) => {
   await sendPostData(appScriptUrl, 'saveAttendance', records);
+};
+
+export const appendAttendanceToSheet = async (appScriptUrl: string, record: AttendanceRecord) => {
+  await sendPostData(appScriptUrl, 'appendAttendance', record);
 };
 
 export const saveTeachersToSheets = async (appScriptUrl: string, teachers: Teacher[]) => {
