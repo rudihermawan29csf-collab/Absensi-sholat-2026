@@ -80,7 +80,7 @@ const Reports: React.FC<ReportsProps> = ({ records: allRecords = [], students = 
   const searchSuggestions = useMemo(() => {
       if (!studentSearchText) return [];
       return students.filter(s => 
-          s.name.toLowerCase().includes(studentSearchText.toLowerCase()) || 
+          (s.name || '').toLowerCase().includes(studentSearchText.toLowerCase()) || 
           s.id.includes(studentSearchText)
       ).slice(0, 5); // Limit 5 suggestions
   }, [students, studentSearchText]);

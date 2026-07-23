@@ -34,7 +34,7 @@ const StudentList: React.FC<StudentListProps> = ({ students, setStudents }) => {
       : students.filter(s => s.className === selectedClassFilter);
     
     // Sort by Name (A-Z) as requested
-    return list.sort((a, b) => a.name.localeCompare(b.name));
+    return list.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
   }, [students, selectedClassFilter]);
 
   const performSync = async (updatedList: Student[]) => {

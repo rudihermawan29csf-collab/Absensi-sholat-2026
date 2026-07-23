@@ -23,7 +23,7 @@ const TeacherList: React.FC<TeacherListProps> = ({ teachers, setTeachers }) => {
         name: newTeacherName.trim()
     };
     
-    const updatedTeachers = [...teachers, newTeacher].sort((a, b) => a.name.localeCompare(b.name));
+    const updatedTeachers = [...teachers, newTeacher].sort((a, b) => (a.name || '').localeCompare(b.name || ''));
     setTeachers(updatedTeachers);
     await saveTeachers(updatedTeachers);
     

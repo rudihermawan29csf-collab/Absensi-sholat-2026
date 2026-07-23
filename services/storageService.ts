@@ -2,7 +2,7 @@
 import { Student, AttendanceRecord, Teacher, SchoolConfig, Holiday } from '../types';
 import { INITIAL_STUDENTS, INITIAL_TEACHERS, INITIAL_CONFIG, STORAGE_KEYS, GOOGLE_SCRIPT_URL } from '../constants';
 import { db, isFirebaseConfigured } from './firebase';
-import { loadAllDataFromSheets, saveStudentsToSheets, saveAttendanceToSheets, saveTeachersToSheets, saveHolidaysToSheets } from './sheetsService';
+import { loadAllDataFromSheets, saveStudentsToSheets, saveAttendanceToSheets, appendAttendanceToSheet, saveTeachersToSheets, saveHolidaysToSheets } from './sheetsService';
 import { 
   collection, 
   getDocs, 
@@ -195,11 +195,9 @@ export const saveStudents = async (students: Student[]): Promise<boolean> => {
   if (isSheetsEnabled()) {
     try {
       await saveStudentsToSheets(getSheetId(), students);
-      return true;
     } catch (e: any) {
       console.warn("Error saving to Sheets:", e);
       alert("Gagal menyimpan ke Google Sheets (Data Siswa): " + e.message);
-      return false;
     }
   }
 
@@ -241,10 +239,8 @@ export const deleteStudent = async (id: string): Promise<boolean> => {
   if (isSheetsEnabled()) {
     try {
       await saveStudentsToSheets(getSheetId(), updatedStudents);
-      return true;
     } catch (e) {
       console.warn("Error deleting in Sheets:", e);
-      return false;
     }
   }
 
@@ -274,10 +270,8 @@ export const deleteStudentsByClass = async (className: string): Promise<boolean>
   if (isSheetsEnabled()) {
     try {
       await saveStudentsToSheets(getSheetId(), updatedStudents);
-      return true;
     } catch (e) {
       console.warn("Error deleting in Sheets:", e);
-      return false;
     }
   }
 
@@ -332,10 +326,8 @@ export const saveTeachers = async (teachers: Teacher[]): Promise<boolean> => {
   if (isSheetsEnabled()) {
     try {
       await saveTeachersToSheets(getSheetId(), teachers);
-      return true;
     } catch (e) {
       console.warn("Error saving teachers to Sheets:", e);
-      return false;
     }
   }
 
@@ -365,10 +357,8 @@ export const deleteTeacher = async (id: string): Promise<boolean> => {
   if (isSheetsEnabled()) {
     try {
       await saveTeachersToSheets(getSheetId(), updatedTeachers);
-      return true;
     } catch (e) {
       console.warn("Error deleting teacher in Sheets:", e);
-      return false;
     }
   }
 
@@ -508,7 +498,7 @@ export const addAttendanceRecordToSheet = async (
 
   if (isSheetsEnabled()) {
     try {
-      await saveAttendanceToSheets(getSheetId(), updatedRecords);
+      await appendAttendanceToSheet(getSheetId(), newRecord);
     } catch (e) {
       console.warn("Error saving attendance to Sheets:", e);
     }

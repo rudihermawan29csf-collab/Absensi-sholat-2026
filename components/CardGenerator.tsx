@@ -141,7 +141,7 @@ const CardGenerator: React.FC<CardGeneratorProps> = ({ students, onClose }) => {
                     }}></div>
 
                     {pageStudents.map((student) => {
-                        const nameLength = student.name.length;
+                        const nameLength = (student.name || '').length;
                         const fontSizeClass = nameLength > 25 ? 'text-[10px]' : nameLength > 18 ? 'text-[12px]' : 'text-sm';
                         
                         return (

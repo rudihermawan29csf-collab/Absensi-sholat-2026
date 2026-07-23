@@ -24,19 +24,17 @@ export const loadAllDataFromSheets = async (appScriptUrl: string) => {
 
 const sendPostData = async (url: string, action: string, data: any) => {
   try {
-    const res = await fetch(url, {
+    await fetch(url, {
       method: 'POST',
-      redirect: 'follow',
-      credentials: 'omit',
+      mode: 'no-cors',
       // Send as text/plain to avoid CORS preflight issues with Google Apps Script
       headers: {
         'Content-Type': 'text/plain;charset=utf-8'
       },
       body: JSON.stringify({ action, data })
     });
-    const result = await res.json();
-    if (!result.success) throw new Error(result.error || 'Failed to save');
-    return result;
+    // With no-cors, response is opaque. Assume success if fetch didn't throw.
+    return { success: true };
   } catch (error) {
     console.error(`Error saving ${action}:`, error);
     throw error;
@@ -49,6 +47,10 @@ export const saveStudentsToSheets = async (appScriptUrl: string, students: Stude
 
 export const saveAttendanceToSheets = async (appScriptUrl: string, records: AttendanceRecord[]) => {
   await sendPostData(appScriptUrl, 'saveAttendance', records);
+};
+
+export const appendAttendanceToSheet = async (appScriptUrl: string, record: AttendanceRecord) => {
+  await sendPostData(appScriptUrl, 'appendAttendance', record);
 };
 
 export const saveTeachersToSheets = async (appScriptUrl: string, teachers: Teacher[]) => {
